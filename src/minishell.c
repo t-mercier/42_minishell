@@ -16,21 +16,21 @@
 
 struct s_global	g_global;
 
-void	dashc(char **argv)
-{
-	t_cmdl	*cl;
+// void	dashc(char **argv)
+// {
+// 	t_cmdl	*cl;
 
-	if (!argv[2][0])
-		exit(0);
-	cl = parse(argv[2], 0);
-	if (!cl || !cl->head)
-	{
-		perror("Error");
-		exit(g_global.exitcode);
-	}
-	process_execution(cl);
-	exit(g_global.exitcode);
-}
+// 	if (!argv[2][0])
+// 		exit(0);
+// 	cl = parse(argv[2], 0);
+// 	if (!cl || !cl->head)
+// 	{
+// 		perror("Error");
+// 		exit(g_global.exitcode);
+// 	}
+// 	process_execution(cl);
+// 	exit(g_global.exitcode);
+// }
 
 void	init_builtins(void)
 {
@@ -75,8 +75,8 @@ int	main(int argc, char **argv, char **envp)
 	t_vector	*env;
 	size_t		i;
 
-	if (argc == 3 && argv[1][1] == 'c')
-		dashc(argv);
+// 	if (argc == 3 && argv[1][1] == 'c')
+// 		dashc(argv);
 	setup_signals();
 	init_builtins();
 	env = build_env(envp);
