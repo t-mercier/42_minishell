@@ -12,22 +12,6 @@
 
 #include "../minishell.h"
 
-void	process_fd(t_cmdl *cl, t_fd *fd)
-{
-	if (cl->head->rin->len)
-	{
-		fd->in = process_redirin(cl->head, fd);
-		dup2(fd->in, 0);
-		close(fd->in);
-	}
-	if (cl->head->rout->len)
-	{
-		fd->out = process_redirout(cl->head, fd);
-		dup2(fd->out, 1);
-		close(fd->out);
-	}
-}
-
 void	process_child(t_cmdl *cl, t_fd *fd)
 {
 	int	status;
@@ -48,19 +32,20 @@ void	process_child(t_cmdl *cl, t_fd *fd)
 	exit(g_global.exitcode);
 }
 
-int	process_fork(t_cmdl *cl, t_fd *fd)
+void	process_fd(t_cmdl *cl, t_fd *fd)
 {
-	int	pid;
-
-	pid = fork();
-	if (pid < 0)
+	if (cl->head->rin->len)
 	{
-		message_error("fork");
-		return (1);
+		fd->in = process_redirin(cl->head, fd);
+		dup2(fd->in, 0);
+		close(fd->in);
 	}
-	else if (!pid)
-		process_child(cl, fd);
-	return (pid);
+	if (cl->head->rout->len)
+	{
+		fd->out = process_redirout(cl->head, fd);
+		dup2(fd->out, 1);
+		close(fd->out);
+	}
 }
 
 bool	process_builtins(t_cmdl *cl, t_cmd *c, t_fd *fd)
@@ -77,6 +62,21 @@ bool	process_builtins(t_cmdl *cl, t_cmd *c, t_fd *fd)
 		return (true);
 	}
 	return (false);
+}
+
+int	process_fork(t_cmdl *cl, t_fd *fd)
+{
+	int	pid;
+
+	pid = fork();
+	if (pid < 0)
+	{
+		message_error("fork");
+		return (1);
+	}
+	else if (!pid)
+		process_child(cl, fd);
+	return (pid);
 }
 
 void	process_execution(t_cmdl *cl)
